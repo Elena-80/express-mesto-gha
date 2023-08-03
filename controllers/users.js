@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const IncorrectDataError = require('../errors/IncorrectDataError');
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
@@ -7,6 +8,10 @@ module.exports.getUser = (req, res) => {
         res.status(404).send({ message: 'Нет пользователя с таким id' });
         return;
       }
+      // if (req.params.userId !== res.params_id) { // Получение пользователя с некорректным id
+      //   res.status(400).send({ message: `Ошибка при валидации: ${err}` });
+      //   return;
+      // }
       res.status(200).send(user);
     })
     .catch((err) => res.status(500).send({ message: err.message }));
@@ -42,7 +47,7 @@ module.exports.createUser = (req, res) => {
 module.exports.patchUser = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { name, about })
+  User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       res.status(200).send(user);
     })
@@ -58,7 +63,7 @@ module.exports.patchUser = (req, res) => {
 module.exports.patchAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { avatar })
+  User.findByIdAndUpdate(userId, { avatar }, { new: true })
     .then((user) => {
       res.status(200).send(user);
     })
