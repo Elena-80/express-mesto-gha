@@ -13,6 +13,10 @@ module.exports.likeCard = (req, res) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: `Передан некорректный id: ${err}` });
+        return;
+      }
       res.status(500).send({ message: `Внутренняя ошибка сервера: ${err}` });
     });
 };
@@ -30,6 +34,10 @@ module.exports.dislikeCard = (req, res) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: `Передан некорректный id: ${err}` });
+        return;
+      }
       res.status(500).send({ message: `Внутренняя ошибка сервера: ${err}` });
     });
 };
@@ -72,6 +80,13 @@ module.exports.deleteCard = (req, res) => {
         res.status(404).send({ message: 'Нет карточки с таким id' });
         return;
       }
+      Card.findById(id)
+        .then((oldCard) => {
+          if (oldCard) {
+            res.status(400).send({ message: 'Карточка не была удалена' });
+            // return;
+          }
+        });
       res.status(200).send(card);
     })
     .catch((err) => {
