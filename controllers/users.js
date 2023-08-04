@@ -7,13 +7,20 @@ module.exports.getUser = (req, res) => {
         res.status(404).send({ message: 'Нет пользователя с таким id' });
         return;
       }
-      if (req.params.userId !== user._id.toString()) { // Получение пользователя с некорректным id
-        res.status(400).send({ message: 'Ошибка при валидации' });
-        return;
-      }
+      // if (req.params.userId !== user._id.toString()) {
+      // Получение пользователя с некорректным id
+      //   res.status(400).send({ message: 'Ошибка при валидации' });
+      //   return;
+      // }
       res.status(200).send(user);
     })
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка при валидации: ${err}` });
+        return;
+      }
+      res.status(500).send({ message: err.message });
+    });
 };
 
 module.exports.getUsers = (req, res) => {
