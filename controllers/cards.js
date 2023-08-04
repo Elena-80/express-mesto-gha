@@ -29,7 +29,7 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(400).send({ message: 'Карточка не найдена.' });
+        return res.status(404).send({ message: 'Карточка не найдена.' });
       }
       return res.status(200).send(card);
     })
@@ -46,7 +46,7 @@ module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
       if (cards.length === 0) {
-        res.status(404).send({ message: 'Нет карточек' });
+        res.status(400).send({ message: 'Нет карточек' });
         return;
       }
       res.status(200).send(cards);
