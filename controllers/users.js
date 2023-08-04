@@ -3,11 +3,10 @@ const User = require('../models/user');
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      // console.log(user);
-      // if (!user) {
-      //   res.status(404).send({ message: 'Нет пользователя с таким id' });
-      //   return;
-      // }
+      if (!user) {
+        res.status(404).send({ message: 'Нет пользователя с таким id' });
+        return;
+      }
       // if (req.params.userId !== user._id.toString()) {
       // Получение пользователя с некорректным id
       //   res.status(400).send({ message: 'Ошибка при валидации' });
