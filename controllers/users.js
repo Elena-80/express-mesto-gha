@@ -3,10 +3,11 @@ const User = require('../models/user');
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
-        return;
-      }
+      // console.log(user);
+      // if (!user) {
+      //   res.status(404).send({ message: 'Нет пользователя с таким id' });
+      //   return;
+      // }
       // if (req.params.userId !== user._id.toString()) {
       // Получение пользователя с некорректным id
       //   res.status(400).send({ message: 'Ошибка при валидации' });
@@ -15,8 +16,8 @@ module.exports.getUser = (req, res) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: `Ошибка при валидации: ${err}` });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: `Передан некорректный id: ${err}` });
         return;
       }
       res.status(500).send({ message: err.message });
