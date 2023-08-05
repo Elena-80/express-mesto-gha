@@ -45,10 +45,6 @@ module.exports.dislikeCard = (req, res) => {
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-      // if (cards.length === 0) {
-      //   res.status(400).send({ message: 'Нет карточек' });
-      //   return;
-      // }
       res.status(200).send(cards);
     })
     .catch((err) => {
@@ -61,7 +57,7 @@ module.exports.createCard = (req, res) => {
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => {
-      res.status(200).send(card);
+      res.status(201).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -80,13 +76,6 @@ module.exports.deleteCard = (req, res) => {
         res.status(404).send({ message: 'Нет карточки с таким id' });
         return;
       }
-      Card.findById(id)
-        .then((oldCard) => {
-          if (oldCard) {
-            res.status(400).send({ message: 'Карточка не была удалена' });
-            // return;
-          }
-        });
       res.status(200).send(card);
     })
     .catch((err) => {
