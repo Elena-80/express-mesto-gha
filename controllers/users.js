@@ -4,6 +4,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 // module.exports.login = (req, res) => {
 //   const { email, password } = req.body;
@@ -35,7 +36,7 @@ module.exports.login = (req, res, next) => {
   return User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user || !password) {
-        return next(new BadRequestError('Неверный email или пароль.'));
+        return next(new UnauthorizedError('Неверный email или пароль.'));
       }
       const token = jwt.sign(
         { _id: user._id },
@@ -86,14 +87,14 @@ module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (users.length === 0) {
-        res.status(404).send({ message: 'Пользователи не найдены' });
-        return;
-        // return next(new NotFoundError('Пользователи не найдены.'));
+      //   res.status(404).send({ message: 'Пользователи не найдены' });
+      //   return;
+        return next(new NotFoundError('Пользователи не найдены.'));
       }
       res.status(200).send(users);
     })
-    // .catch(next);
-    .catch((err) => res.status(500).send({ message: `Внутренняя ошибка сервера: ${err}` }));
+    .catch(next);
+  // .catch((err) => res.status(500).send({ message: `Внутренняя ошибка сервера: ${err}` }));
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -105,12 +106,22 @@ module.exports.createUser = (req, res, next) => {
       email: req.body.email,
       password: hash,
     })
-      .then((user) => {
-        res.status(201).send(user);
+      .then(({
+        name, about, avatar, email, _id, createdAt,
+      }) => {
+        res.status(201).send(
+          {
+            data: {
+              name, about, avatar, email, _id, createdAt,
+            },
+          },
+        );
       })
+      // .then((user) => {
+      //   res.status(201).send(user);
+      // })
       .catch((err) => {
         if (err.code === 11000) {
-          // res.status(400).send({ message: `Пользователь с таким электронным адресом уже зарегистрирован: ${err}` });
           return next(new ConflictError('Пользователь с таким электронным адресом уже зарегистрирован'));
         }
         if (err.name === 'ValidationError') {

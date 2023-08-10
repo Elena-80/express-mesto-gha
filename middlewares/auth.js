@@ -27,11 +27,6 @@ module.exports = (req, res, next) => {
   next(); // пропускаем запрос дальше
 };
 
-
-
-
-
-
 // require('dotenv').config();
 
 // const { SECRETKEY = 'JWT_SECRET' } = process.env;
@@ -59,4 +54,3 @@ module.exports = (req, res, next) => {
 //   };
 //   return next();
 // };
-
