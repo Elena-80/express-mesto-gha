@@ -4,23 +4,17 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const BadRequestError = require('../errors/BadRequestError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  return User.findOne({ email }).select('+password')
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user || !password) {
-        return next(new UnauthorizedError('Неверный email или пароль.'));
-      }
       const token = jwt.sign(
         { _id: user._id },
         'some-secret-key',
-        {
-          expiresIn: '7d',
-        },
+        { expiresIn: '7d' },
       );
-      return res.send({ token });
+      res.status(200).send({ token });
     })
     .catch(next);
 };

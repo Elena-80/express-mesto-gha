@@ -6,9 +6,18 @@ const bodyParser = require('body-parser');
 // const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 const handleError = require('./middlewares/handleError');
 
-const URL_PATTERN = /^https?:\/\/(?:w{3}\.)?(?:[a-z0-9]+[a-z0-9-]*\.)+[a-z]{2,}(?::[0-9]+)?(?:\/\S*)?#?$/i;
+const { URL_PATTERN } = require('./utils/constants');
 
 const NotFoundError = require('./errors/NotFoundError');
 const {
@@ -26,6 +35,7 @@ mongoose.connect(DB_URL, {
   // useUnifiedTopology: true,
 });
 
+app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
