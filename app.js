@@ -1,13 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('./middlewares/cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
 const rateLimit = require('express-rate-limit');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
+const cors = require('./middlewares/cors');
+const { requestLogger, errorLogger } = require('./middlewares/Logger');
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -42,7 +42,6 @@ app.use(cors);
 app.use(requestLogger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 app.use(requestLogger);
 
