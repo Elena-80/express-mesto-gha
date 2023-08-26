@@ -27,6 +27,8 @@ const {
 const auth = require('./middlewares/auth');
 
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+console.log(DB_URL);
+
 const app = express();
 
 mongoose.connect(DB_URL, {
