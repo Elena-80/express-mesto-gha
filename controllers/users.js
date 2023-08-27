@@ -1,4 +1,3 @@
-
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const {
@@ -58,9 +57,15 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getCurrentUser = (req, res, next) => { return getAnyUser(req, res, req.user._id, next); };
+module.exports.getCurrentUser = (req, res, next) => {
+  const { _id } = req.user;
+  return getAnyUser(req, res, _id, next);
+};
 
-module.exports.getUser = (req, res, next) => { return getAnyUser(req, res, req.params.userId, next); }
+module.exports.getUser = (req, res, next) => {
+  const { userId } = req.params;
+  return getAnyUser(req, res, userId, next);
+};
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -102,11 +107,11 @@ module.exports.createUser = (req, res, next) => {
 module.exports.patchUser = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user._id;
-  patchUserInfo(userId, { name, about }, { new: true, runValidators: true }, next);
+  return patchUserInfo(userId, { name, about }, { new: true, runValidators: true }, next);
 };
 
 module.exports.patchAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const userId = req.user._id;
-  patchUserInfo(userId, { avatar }, { new: true }, next);
+  return patchUserInfo(userId, { avatar }, { new: true }, next);
 };
