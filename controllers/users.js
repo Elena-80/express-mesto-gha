@@ -15,7 +15,6 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 function patchUserInfo(req, res, userId, info, next) {
   User.findByIdAndUpdate(userId, { info }, { new: true, runValidators: true })
-    .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err instanceof ValidationError) {
