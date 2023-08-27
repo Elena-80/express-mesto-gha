@@ -14,7 +14,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 function patchUserInfo(req, res, userId, info, next) {
-  User.findByIdAndUpdate(userId, { info }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(userId, info, { new: true, runValidators: true })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err instanceof ValidationError) {
@@ -106,11 +106,11 @@ module.exports.createUser = (req, res, next) => {
 module.exports.patchUser = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user._id;
-  return patchUserInfo(userId, { name, about }, { new: true, runValidators: true }, next);
+  return patchUserInfo(req, res, userId, { name, about }, next);
 };
 
 module.exports.patchAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const userId = req.user._id;
-  return patchUserInfo(userId, { avatar }, { new: true }, next);
+  return patchUserInfo(req, res, userId, { avatar }, next);
 };
