@@ -1,8 +1,8 @@
 const allowedCors = [
   'http://mesto80.students.nomoredomainsicu.ru',
   'https://mesto80.students.nomoredomainsicu.ru',
-  // 'http://localhost:3001',
-  // 'https://localhost:3001',
+  'http://localhost:3001',
+  'https://localhost:3001',
   'http://localhost:3000',
   'https://localhost:3000',
 ];
